@@ -3,20 +3,30 @@ Parses the pure ASCII SEER files into CSV format, using the
 vars.txt file created by get_vars.py.
 '''
 
-f_input = open('COLRECT.TXT', 'r')
-f_vars = open('vars.txt', 'r')
-f_output = open('CSV_Data/COLRECT_csv.txt', 'w')
+import sys
 
-# read variable names, begin index, and length
-# print header row
-vars_and_indices = []
-for row in f_vars:
-    info = row.split()
-    info[1] = int(info[1])
-    info[2] = int(info[2])
-    vars_and_indices.append(info)
-    f_output.write(info[0]+",")
-f_output.write("\n")
+if len(sys.argv) != 4:
+    print('Usage: python SEER_to_csv.py \
+    [begin flag ("t" or "f")] [input file] [output file]')
+    exit(1)
+
+f_input = open('../SEER_raw/' + sys.argv[2], 'r')
+f_output = open('../SEER_parsed_csv/' + sys.argv[3], 'a')
+
+
+with open('vars.txt', 'r') as f_vars:
+    # read variable names, begin index, and length
+    # print header row
+    vars_and_indices = []
+    for row in f_vars:
+        info = row.split()
+        info[1] = int(info[1])
+        info[2] = int(info[2])
+        vars_and_indices.append(info)
+        if sys.argv[1] == "t":
+            f_output.write(info[0]+",")
+    if sys.argv[1] == "t":
+        f_output.write("\n")
 
 count=0
 for instance in f_input:
@@ -35,4 +45,3 @@ for instance in f_input:
 
 f_output.close()
 f_input.close()
-f_vars.close()
