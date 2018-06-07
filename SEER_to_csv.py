@@ -11,6 +11,7 @@ if len(sys.argv) != 4:
     exit(1)
 
 f_input = open('../SEER_raw/' + sys.argv[2], 'r')
+#f_vars = open('vars.txt', 'r')
 f_output = open('../SEER_parsed_csv/' + sys.argv[3], 'a')
 
 
