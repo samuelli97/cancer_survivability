@@ -1,0 +1,18 @@
+HISPANIC:
+
+SELECT pubcsnum, mar_stat, sex, primsite, histo3v, beho3v, grade, dx_conf, csexten, cslymphn, csmetsdx, cstseval, csrgeval, csmteval, surgprif, no_surg, summ2k, reg, age_dx, eod10_pn, eod10_ne, cstumsiz, maligcount, benbordcount, year_dx, nhiade, codpub, srv_time_mon, srv_time_mon_flag
+FROM colrect
+WHERE year_dx>2003 AND nhiade>0 AND year_dx<2014 AND srv_time_mon<>9999 AND age_dx<>999 AND maligcount<>99;
+
+WHITE:
+
+SELECT pubcsnum, mar_stat, sex, primsite, histo3v, beho3v, grade, dx_conf, csexten, cslymphn, csmetsdx, cstseval, csrgeval, csmteval, surgprif, no_surg, summ2k, reg, age_dx, eod10_pn, eod10_ne, cstumsiz, maligcount, benbordcount, year_dx, nhiade, codpub, srv_time_mon, srv_time_mon_flag
+FROM colrect
+WHERE year_dx>2003 AND race1v=01 AND nhiade=0 AND year_dx<2014 AND srv_time_mon<>9999 AND age_dx<>999 AND maligcount<>99;
+
+MIXED:
+
+SELECT pubcsnum, mar_stat, sex, primsite, histo3v, beho3v, grade, dx_conf, csexten, cslymphn, csmetsdx, cstseval, csrgeval, csmteval, surgprif, no_surg, summ2k, reg, age_dx, eod10_pn, eod10_ne, cstumsiz, maligcount, benbordcount, year_dx, nhiade, codpub, srv_time_mon, srv_time_mon_flag
+FROM colrect
+WHERE year_dx>2003 AND year_dx<2014 AND (nhiade>0 OR race1v=1) AND srv_time_mon<>9999 AND age_dx<>999 AND maligcount<>99;
+
