@@ -3,44 +3,46 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: cancer-survivability.aux
 The style file: elsarticle-num.bst
 Database file #1: mybibfile.bib
-You've used 2 entries,
+Warning--there's a number but no volume in he2008learning
+You've used 12 entries,
             2937 wiz_defined-function locations,
-            683 strings with 5600 characters,
-and the built_in function-call counts, 697 in all, are:
-= -- 60
-> -- 23
-< -- 0
-+ -- 9
-- -- 7
-* -- 56
-:= -- 114
-add.period$ -- 2
-call.type$ -- 2
-change.case$ -- 2
+            738 strings with 7488 characters,
+and the built_in function-call counts, 3122 in all, are:
+= -- 287
+> -- 78
+< -- 2
++ -- 34
+- -- 22
+* -- 166
+:= -- 404
+add.period$ -- 12
+call.type$ -- 12
+change.case$ -- 16
 chr.to.int$ -- 0
-cite$ -- 2
-duplicate$ -- 16
-empty$ -- 70
-format.name$ -- 9
-if$ -- 160
+cite$ -- 13
+duplicate$ -- 105
+empty$ -- 393
+format.name$ -- 29
+if$ -- 835
 int.to.chr$ -- 0
-int.to.str$ -- 2
-missing$ -- 2
-newline$ -- 14
-num.names$ -- 2
-pop$ -- 12
+int.to.str$ -- 12
+missing$ -- 6
+newline$ -- 44
+num.names$ -- 11
+pop$ -- 98
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 33
+skip$ -- 227
 stack$ -- 0
-substring$ -- 67
-swap$ -- 2
-text.length$ -- 0
+substring$ -- 159
+swap$ -- 15
+text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 0
-while$ -- 5
-width$ -- 3
-write$ -- 22
+warning$ -- 1
+while$ -- 23
+width$ -- 14
+write$ -- 101
+(There was 1 warning)
