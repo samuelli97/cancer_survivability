@@ -1,0 +1,182 @@
+\documentclass[review]{elsarticle}
+
+\usepackage{lineno,hyperref}
+\usepackage{float}
+
+%\modulolinenumbers[5]
+%\linenumbers
+
+%\journal{Journal of \LaTeX\ Templates}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Elsevier bibliography styles
+%%%%%%%%%%%%%%%%%%%%%%%
+%% To change the style, put a % in front of the second line of the current style and
+%% remove the % from the second line of the style you would like to use.
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Numbered
+%\bibliographystyle{model1-num-names}
+
+%% Numbered without titles
+%\bibliographystyle{model1a-num-names}
+
+%% Harvard
+%\bibliographystyle{model2-names.bst}\biboptions{authoryear}
+
+%% Vancouver numbered
+%\usepackage{numcompress}\bibliographystyle{model3-num-names}
+
+%% Vancouver name/year
+%\usepackage{numcompress}\bibliographystyle{model4-names}\biboptions{authoryear}
+
+%% APA style
+%\bibliographystyle{model5-names}\biboptions{authoryear}
+
+%% AMA style
+%\usepackage{numcompress}\bibliographystyle{model6-num-names}
+
+%% `Elsevier LaTeX' style
+\bibliographystyle{elsarticle-num}
+%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{lipsum}
+\makeatletter
+\def\ps@pprintTitle{%
+	\let\@oddhead\@empty
+	\let\@evenhead\@empty
+	\def\@oddfoot{}%
+	\let\@evenfoot\@oddfoot}
+\makeatother
+
+\begin{document}
+
+\begin{frontmatter}
+	
+\title{Personalized colorectal cancer survivability prediction with machine learning methods }
+%\author{Samuel Li \\ }
+\author{Samuel Li \\ Department of Computer Science, Princeton University \\ \href{mailto:seli@princeton.edu}{seli@princeton.edu}} 
+
+%\title{Elsevier \LaTeX\ template\tnoteref{mytitlenote}}
+%\tnotetext[mytitlenote]{Fully documented templates are available in the elsarticle package on \href{http://www.ctan.org/tex-archive/macros/latex/contrib/elsarticle}{CTAN}.}
+
+%% Group authors per affiliation:
+%\author{Elsevier\fnref{myfootnote}}
+%\address{Radarweg 29, Amsterdam}
+%\fntext[myfootnote]{Since 1880.}
+
+%% or include affiliations in footnotes:
+%\author[mymainaddress,mysecondaryaddress]{Elsevier Inc}
+%\ead[url]{www.elsevier.com}
+
+%\author[mysecondaryaddress]{Global Customer Service\corref{mycorrespondingauthor}}
+%\cortext[mycorrespondingauthor]{Corresponding author}
+%\ead{support@elsevier.com}
+
+%\address[mymainaddress]{1600 John F Kennedy Boulevard, Philadelphia}
+%\address[mysecondaryaddress]{360 Park Avenue South, New York}
+
+\begin{abstract}
+
+\end{abstract}
+
+\begin{keyword}
+Cancer survivability prediction \sep SEER \sep machine learning \sep personalized medicine \sep imbalanced classification
+%\texttt{elsarticle.cls}\sep \LaTeX\sep Elsevier \sep template
+%\MSC[2010] 00-01\sep  99-00
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+
+
+
+\section{Background and Methodology}
+
+\subsection*{Machine Learning Pipeline}
+
+\subsection*{Data Source}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\textbf{Ethnicity} & \textbf{Not Survived} & \textbf{Survived}  \\ 
+		\hline
+		White              & 53343                 & 222204             \\
+		Hispanic           & 6762                  & 30813              \\
+		&                       &                    \\
+		&                       &                   
+	\end{tabular}
+\end{table}
+
+\subsection*{Data Preprocessing}
+
+\subsection*{Models}
+We selected the following classifiers to predict survivability. Models were selected based on preliminary test performance as well as models previously reported in literature.
+\begin{itemize}
+	\item \textit{Logistic Regression} 
+\end{itemize}
+
+
+\section{Results}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{llll}
+		\textbf{Model}      & \textbf{Hispanic} & \textbf{White} & \textbf{Mixed}  \\ 
+		\hline
+		Logistic Regression & .859              & .872           & .87             \\
+		Random Forest       & .855              & .865           & .849            \\
+		AdaBoost            & .859              & .871           & .859            \\
+		Neural Network       & .873              & .875           & .856           
+	\end{tabular}
+	\caption{}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\footnotesize
+	\label{factor-rankings}
+	\begin{tabular}{ll|ll|ll}
+		\multicolumn{2}{c}{\textbf{Logistic Regression}}         & \multicolumn{2}{c}{\textbf{Random Forest}}              & \multicolumn{2}{c}{\textbf{AdaBoost}}                   \\
+		\multicolumn{1}{l}{\textbf{Hispanic}} & \textbf{White}   & \multicolumn{1}{l}{\textbf{Hispanic}} & \textbf{White}  & \multicolumn{1}{l}{\textbf{Hispanic}} & \textbf{White}  \\ \hline
+		Histology                             & Histology        & Metastasis                            & Metastasis      & Extension                             & Extension       \\
+		Extension                             & Lymph node inv.  & Stage                                 & Stage           & Histology                             & Age             \\
+		Metastasis                            & Extension        & Age                                   & Age             & Age                                   & Histology        \\
+		Surgery site                          & Surgery site     & No surg. reason                       & No surg. reason & Tumor size                            & Positive nodes  \\
+		Diagnostic conf.                      & Metastasis       & Positive nodes                        & Positive nodes   & Positive nodes                        & Metastasis      \\
+		Lymph node inv.                       & Diagnostic conf. & Surgery site                          & Surgery site    & Metastasis                            & Tumor size      \\
+		No surg. reason                       & Primary site     & Tumor size                            & Tumor size      & Surgery site                          & Surgery site   
+	\end{tabular}
+	\caption{}
+	
+	
+\end{table}
+
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{llll}
+		\textbf{Model}               & \textbf{Hispanic} & \textbf{White} &   \\ \hline
+		Logistic Regression          & .628              & .683           &   \\
+		Weighted Logistic Regression & .783              & .8             &   \\
+		Undersampled Logistic Regression & .79 & .8 & \\ 
+		Random Forest                & .623              & .631           &   \\
+		Weighted Random Forest       & .782              & .775           &  \\
+		Undersampled Random Forest & .787 & .796
+	\end{tabular}
+	\caption{EMPHASIZE this is G-mean}
+\end{table}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+
+Here are two sample references: \cite{al2017survivability,azur2011multiple}.
+
+\section*{References}
+
+\bibliography{mybibfile}
+
+\end{document}

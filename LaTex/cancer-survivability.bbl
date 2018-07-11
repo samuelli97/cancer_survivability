@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{al2017survivability}
+R.~Al-Bahrani, A.~Agrawal, A.~Choudhary, Survivability prediction of colon
+  cancer patients using neural networks, Health informatics journal (2017)
+  1460458217720395.
+
+\bibitem{azur2011multiple}
+M.~J. Azur, E.~A. Stuart, C.~Frangakis, P.~J. Leaf, Multiple imputation by
+  chained equations: what is it and how does it work?, International journal of
+  methods in psychiatric research 20~(1) (2011) 40--49.
+
+\end{thebibliography}
