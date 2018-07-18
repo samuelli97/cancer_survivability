@@ -4,6 +4,8 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage[margin=1.5in]{geometry}
+\usepackage{multirow}
+\newcommand*\rot{\rotatebox{90}}
 
 %\modulolinenumbers[5]
 %\linenumbers
@@ -113,11 +115,11 @@ The diagnostic data used in our research was obtained from the Surveillance, Epi
 \begin{table}[H]
 	\centering
 	
-	\begin{tabular}{lll}
-		\textbf{Ethnicity} & \textbf{Not Survived} & \textbf{Survived}  \\ 
+	\begin{tabular}{cccc}
+		\textbf{Ethnicity} & \textbf{Not Survived} & \textbf{Survived} & \textbf{Total} \\ 
 		\hline
-		White              & 53343                 & 222204             \\
-		Hispanic           & 6762                  & 30813              \\
+		White              & 53343 (19.4\%)   & 222204 (80.6\%)        &  275547  \\
+		Hispanic           & 6762 (18\%)       & 30813 (82\%)           &  37575 \\
 	\end{tabular}
 	\caption{Dataset label distribution by ethnicity}
 	\label{dataset-info}
@@ -130,13 +132,13 @@ Raw SEER data is encoded in pure ASCII files. These files were converted via Pyt
 
 In this paper, we will refer to instances and predictions where a patient survives beyond two years as “positive”, and instances and predictions where a patient dies of colorectal cancer before two years as “negative”. Accordingly, an instance is labeled negative if the survival time in months field is less than 24, and the cause of death is colon or rectum cancer. All instances not satisfying those two conditions are labeled positive.
 
-Of the 133 features provided by SEER, we selected the 20 features detailed in Table~\ref{variable-info} based on feature importances reported in the literature.
+Of the 133 features provided by SEER, we selected the 20 features detailed in Table~\ref{variable-info} based on feature importances reported in the literature. We selected 16 categorical features and 4 continuous features. Each feature was carefully examined for outliers, missing values, and other inconsistencies. For the age diagnosed, number of malignant tumors, and months survived features, we deleted entire instances if the feature was missing. For the tumor size and number of positive nodes features,  where there were a large proportion of missing or unknown values, we employed the MICE imputation technique, described shortly. It is worth noting that many other related studies cited in this paper have dropped large proportions of instances with missing data. However, we wanted to minimize instance eliminations because the SEER dataset did not have abundantly many Hispanic patient instances to begin with.
 
 \begin{table}[H]
 	\centering
 	\tiny
 	\begin{tabular}{ll}
-		\textbf{Variable} & \textbf{Unique values}  \\ 
+		\textbf{Categorical Variable} & \textbf{Unique values}  \\ 
 		\hline
 		Marital status    & 7                       \\
 		Sex               & 2                       \\
@@ -159,7 +161,7 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 	\quad
 	\centering
 	\begin{tabular}{lll}
-		\textbf{Variable} & \textbf{Mean} & \textbf{S.D.}  \\ 
+		\textbf{Continuous Variable} & \textbf{Mean} & \textbf{S.D.}  \\ 
 		\hline
 		Age diagnosed     & 68.3          & 14             \\
 		Positive nodes    & 1.57          & 4.26           \\
@@ -169,8 +171,6 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 	\caption{Features used in models}
 	\label{variable-info}
 \end{table}
-
-We selected 16 categorical features and 4 continuous features. Each feature was carefully examined for outliers, missing values, and other inconsistencies. For the age diagnosed, number of malignant tumors, and months survived features, we deleted entire instances if the feature was missing. For the tumor size and number of positive nodes features,  where there were a large proportion of missing or unknown values, we employed the MICE imputation technique, described shortly. It is worth noting that many other related studies cited in this paper have dropped large proportions of instances with missing data. However, we wanted to minimize instance eliminations because the SEER dataset did not have abundantly many Hispanic patient instances to begin with.
 
 In order to reconcile categorical and continuous features, we used a one-hot encoding scheme to binarize the categorical features. For each categorical feature, one-hot encoding creates a new binary indicator variable for every possible value of the original feature. 
 
@@ -189,7 +189,31 @@ We selected the following classifiers to predict survivability. Models were sele
 \subsection*{Evaluation Metrics}
 As our class labels are imbalanced, the conventional metric of accuracy is an inadequate indicator of model performance: A model which always predicts that the patient survives would achieve over 80\% accuracy. The most common evaluation metric in the literature is Area Under Curve (AUC) of the ROC curve. The AUC score is intuitively interpreted as the probability that, given a positive and a negative instance, the positive instance is ranked more likely to be positive than the negative instance. The AUC score can be calculated given a set of predicted labels and the corresponding true labels. We employ AUC as the primary evaluation metric so that our results can be more comparable to results reported in the literature.
 
-Additionally, we use the G-mean as an indicator for how well we are doing on an imbalanced classification problem. The G-mean is defined as follows:
+Additionally, we use the G-mean as an indicator for our performance on an imbalanced classification problem. To define the G-mean, we first define the following four metrics:
+\begin{align*}
+\text{TP (true positive): the number of positive instances labeled positive}\\
+\text{TN (true negative): the number of negative instances labeled negative}\\
+\text{FP (false positive): the number of negative instances labeled positive}\\
+\text{FN (false negative): the number of negative instances labeled negative}
+\end{align*} 
+Table~\ref{confusion-matrix} summarizes the definitions.
+\begin{table}[H]
+	\centering
+	\begin{tabular}{llll}
+		&                                   & \multicolumn{2}{c}{True Label}                     \\ 
+		\cline{3-4}
+		&                                   & Not Survived            & Survived                 \\ 
+		\cline{3-4}
+		\multirow{2}{*}{\rot{Predicted}} & \multicolumn{1}{|l|}{Not Survived} & \multicolumn{1}{l|}{TN} & \multicolumn{1}{l|}{FN}  \\ 
+		\cline{3-4}
+		\multicolumn{1}{l}{}                & \multicolumn{1}{|l|}{Survived}     & \multicolumn{1}{l|}{FP} & \multicolumn{1}{l|}{TP}  \\ 
+		\cline{3-4}
+		&                                   &                         &                         
+	\end{tabular}
+	\caption{The confusion matrix groups instances by the combination of their true and predicted labels.}
+	\label{confusion-matrix}
+\end{table}
+\noindent The G-mean is defined as follows:
 \begin{align*}
 	\text{G-mean} = \sqrt{\text{sensitivity}\cdot\text{specificity}}
 \end{align*}
@@ -199,7 +223,9 @@ where sensitivity and specificity are defined as:
 \end{align*}
  The G-mean is a viable metric for imbalanced classification because it weights the rate of correctly predicting the majority and minority classes equally.
 \section{Results}
-We trained our models in Scikit-learn, an open-source Python machine learning library. We used cross-validation to determine the best hyperparameters for each model, and recorded results on the test sets, each composed of a randomly-selected 10 percent of the data. All code used is in our GitHub repository\cite{cancer_survivability}. Table~\ref{auc-scores} details the AUC scores for each model and dataset. The AUC scores achieved are equal to the best reported in literature by\cite{al2017survivability}. Our AUC scores are calculated on each model's prediction of the probability that the true label is positive. This will generate a higher AUC score because wrong predictions are not penalized as heavily if their probability prediction was closer to 0.5.
+We trained our models with Scikit-learn, an open-source Python machine learning library. We used Scikit-learn version 0.19.1 and Python 3.6.4. All experiments were executed on a Linux machine with an Intel i7-3700 3.4 GHz processor and 16GB RAM running Ubuntu 18.04 LTS.
+
+We used 5-fold cross-validation to determine the best hyperparameters for each model, and recorded results on the test sets, each composed of a randomly-selected 10 percent of the data. All code used is in our GitHub repository\cite{cancer_survivability}. Table~\ref{auc-scores} details the AUC scores for each model and dataset. The AUC scores achieved are equal to the best reported in literature by\cite{al2017survivability}. Our AUC scores are calculated on each model's prediction of the probability that the true label is positive. This will generate a higher AUC score because wrong predictions are not penalized as heavily if their probability prediction was closer to 0.5.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{llll}
