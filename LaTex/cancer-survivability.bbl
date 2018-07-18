@@ -1,0 +1,69 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{colorectal-stats}
+{National Cancer Institute}, Cancer stat facts: Colorectal cancer,
+  \url{https://seer.cancer.gov/statfacts/html/colorect.html}, accessed:
+  2018-07-11.
+
+\bibitem{colorectal-survival-stats}
+{American Cancer Society}, {Survival Rates for Colorectal Cancer, by Stage},
+  \url{https://www.cancer.org/cancer/colon-rectal-cancer/detection-diagnosis-staging/survival-rates.html},
+  accessed: 2018-07-11.
+
+\bibitem{delen2005predicting}
+D.~Delen, G.~Walker, A.~Kadam, Predicting breast cancer survivability: a
+  comparison of three data mining methods, Artificial intelligence in medicine
+  34~(2) (2005) 113--127.
+
+\bibitem{al2017survivability}
+R.~Al-Bahrani, A.~Agrawal, A.~Choudhary, Survivability prediction of colon
+  cancer patients using neural networks, Health informatics journal (2017)
+  1460458217720395.
+
+\bibitem{al2013colon}
+R.~Al-Bahrani, A.~Agrawal, A.~Choudhary, Colon cancer survival prediction using
+  ensemble data mining on seer data, in: Big Data, 2013 IEEE International
+  Conference on, IEEE, 2013, pp. 9--16.
+
+\bibitem{liu2009decision}
+Y.-Q. Liu, C.~Wang, L.~Zhang, Decision tree based predictive models for breast
+  cancer survivability on imbalanced data, in: Bioinformatics and Biomedical
+  Engineering, 2009. ICBBE 2009. 3rd International Conference on, IEEE, 2009,
+  pp. 1--4.
+
+\bibitem{race-mortality}
+{SEER Cancer Statistics Review 1975-2015}, Age-adjusted seer incidence rates
+  and trends for the top 15 cancer sitesa by race/ethnicity,
+  \url{https://seer.cancer.gov/csr/1975_2015/results_merged/topic_race_ethnicity.pdf},
+  accessed: 2018-07-11.
+
+\bibitem{hispanic_origin}
+A.~Gonzalez-Barrera, M.~H. Lopez, Is being hispanic a matter of race, ethnicity
+  or both?,
+  \url{http://www.pewresearch.org/fact-tank/2015/06/15/is-being-hispanic-a-matter-of-race-ethnicity-or-both/},
+  accessed: 2018-07-08.
+
+\bibitem{seer-dataset}
+{Surveillance, Epidemiology, and End Results (SEER) Program
+  (www.seer.cancer.gov) Research Data (1973-2015), National Cancer Institute,
+  DCCPS, Surveillance Research Program, released April 2018, based on the
+  November 2017 submission.}
+
+\bibitem{freund1999short}
+Y.~Freund, R.~Schapire, A short introduction to boosting, Journal-Japanese
+  Society For Artificial Intelligence 14~(771-780) (1999) 1612.
+
+\bibitem{he2008learning}
+H.~He, E.~A. Garcia, Learning from imbalanced data, IEEE Transactions on
+  Knowledge \& Data Engineering~(9) (2008) 1263--1284.
+
+\bibitem{cancer_survivability}
+S.~Li, Personalized colorectal cancer survivability prediction,
+  \url{https://github.com/samuelli97/cancer_survivability} (2018).
+
+\end{thebibliography}
