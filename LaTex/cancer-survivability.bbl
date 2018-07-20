@@ -54,13 +54,29 @@ A.~Gonzalez-Barrera, M.~H. Lopez, Is being hispanic a matter of race, ethnicity
   DCCPS, Surveillance Research Program, released April 2018, based on the
   November 2017 submission.}
 
+\bibitem{azur2011multiple}
+M.~J. Azur, E.~A. Stuart, C.~Frangakis, P.~J. Leaf, Multiple imputation by
+  chained equations: what is it and how does it work?, International journal of
+  methods in psychiatric research 20~(1) (2011) 40--49.
+
+\bibitem{breiman2001random}
+L.~Breiman, Random forests, Machine learning 45~(1) (2001) 5--32.
+
 \bibitem{freund1999short}
 Y.~Freund, R.~Schapire, A short introduction to boosting, Journal-Japanese
   Society For Artificial Intelligence 14~(771-780) (1999) 1612.
 
+\bibitem{lecun2015deep}
+Y.~LeCun, Y.~Bengio, G.~Hinton, Deep learning, nature 521~(7553) (2015) 436.
+
 \bibitem{he2008learning}
 H.~He, E.~A. Garcia, Learning from imbalanced data, IEEE Transactions on
   Knowledge \& Data Engineering~(9) (2008) 1263--1284.
+
+\bibitem{chawla2002smote}
+N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, W.~P. Kegelmeyer, Smote: synthetic
+  minority over-sampling technique, Journal of artificial intelligence research
+  16 (2002) 321--357.
 
 \bibitem{cancer_survivability}
 S.~Li, Personalized colorectal cancer survivability prediction,

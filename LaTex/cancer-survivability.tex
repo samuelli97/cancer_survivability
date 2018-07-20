@@ -4,6 +4,10 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage[margin=1.5in]{geometry}
+\usepackage{multirow}
+\newcommand*\rot{\rotatebox{90}}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 %\modulolinenumbers[5]
 %\linenumbers
@@ -78,7 +82,7 @@
 %\address[mysecondaryaddress]{360 Park Avenue South, New York}
 
 \begin{abstract}
-In this work we investigate the importance of ethnicity in colorectal cancer survivability prediction using machine learning techniques and the SEER cancer incidence database. We compare model performances for 2-year survivability prediction and factor importance rankings between Hispanic, white, and mixed patient populations. Our models consistently performed better on single-ethnicity populations, and provided different factor importance rankings when trained on different populations. Additionally, after training our models to match the best reported AUC scores, we improved G-mean score with imbalanced classification techniques. These results provide evidence in favor for increased consideration of patient ethnicity in cancer survivability prediction, and for more personalized medicine in general.
+In this work we investigate the importance of ethnicity in colorectal cancer survivability prediction using machine learning techniques and the SEER cancer incidence database. We compare model performances for 2-year survivability prediction and factor importance rankings between Hispanic, white, and mixed patient populations. Our models consistently performed better on single-ethnicity populations, and provided different factor importance rankings when trained on different populations. Additionally, after training our models to achieve higher AUC score than the best reported in literature, we improved G-mean score with imbalanced classification techniques. These results provide evidence in favor for increased consideration of patient ethnicity in cancer survivability prediction, and for more personalized medicine in general.
 \end{abstract}
 
 \begin{keyword}
@@ -113,11 +117,11 @@ The diagnostic data used in our research was obtained from the Surveillance, Epi
 \begin{table}[H]
 	\centering
 	
-	\begin{tabular}{lll}
-		\textbf{Ethnicity} & \textbf{Not Survived} & \textbf{Survived}  \\ 
+	\begin{tabular}{cccc}
+		\textbf{Ethnicity} & \textbf{Not Survived} & \textbf{Survived} & \textbf{Total} \\ 
 		\hline
-		White              & 53343                 & 222204             \\
-		Hispanic           & 6762                  & 30813              \\
+		White              & 53343 (19.4\%)   & 222204 (80.6\%)        &  275547  \\
+		Hispanic           & 6762 (18\%)       & 30813 (82\%)           &  37575 \\
 	\end{tabular}
 	\caption{Dataset label distribution by ethnicity}
 	\label{dataset-info}
@@ -130,13 +134,13 @@ Raw SEER data is encoded in pure ASCII files. These files were converted via Pyt
 
 In this paper, we will refer to instances and predictions where a patient survives beyond two years as “positive”, and instances and predictions where a patient dies of colorectal cancer before two years as “negative”. Accordingly, an instance is labeled negative if the survival time in months field is less than 24, and the cause of death is colon or rectum cancer. All instances not satisfying those two conditions are labeled positive.
 
-Of the 133 features provided by SEER, we selected the 20 features detailed in Table~\ref{variable-info} based on feature importances reported in the literature.
+Of the 133 features provided by SEER, we selected the 20 features detailed in Table~\ref{variable-info} based on feature importances reported in the literature\cite{delen2005predicting,al2013colon}. We selected 16 categorical features and 4 continuous features. Each feature was carefully examined for outliers, missing values, and other inconsistencies. For the age diagnosed, number of malignant tumors, and months survived features, we deleted entire instances if the feature was missing. For the tumor size and number of positive nodes features,  where there were a large proportion of missing or unknown values, we employed the MICE imputation technique, described shortly. It is worth noting that many other related studies cited in this paper have dropped large proportions of instances with missing data. However, we wanted to minimize instance eliminations because the SEER dataset did not have abundantly many Hispanic patient instances to begin with.
 
 \begin{table}[H]
 	\centering
 	\tiny
 	\begin{tabular}{ll}
-		\textbf{Variable} & \textbf{Unique values}  \\ 
+		\textbf{Categorical Variable} & \textbf{Unique values}  \\ 
 		\hline
 		Marital status    & 7                       \\
 		Sex               & 2                       \\
@@ -159,7 +163,7 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 	\quad
 	\centering
 	\begin{tabular}{lll}
-		\textbf{Variable} & \textbf{Mean} & \textbf{S.D.}  \\ 
+		\textbf{Continuous Variable} & \textbf{Mean} & \textbf{S.D.}  \\ 
 		\hline
 		Age diagnosed     & 68.3          & 14             \\
 		Positive nodes    & 1.57          & 4.26           \\
@@ -170,26 +174,71 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 	\label{variable-info}
 \end{table}
 
-We selected 16 categorical features and 4 continuous features. Each feature was carefully examined for outliers, missing values, and other inconsistencies. For the age diagnosed, number of malignant tumors, and months survived features, we deleted entire instances if the feature was missing. For the tumor size and number of positive nodes features,  where there were a large proportion of missing or unknown values, we employed the MICE imputation technique, described shortly. It is worth noting that many other related studies cited in this paper have dropped large proportions of instances with missing data. However, we wanted to minimize instance eliminations because the SEER dataset did not have abundantly many Hispanic patient instances to begin with.
-
 In order to reconcile categorical and continuous features, we used a one-hot encoding scheme to binarize the categorical features. For each categorical feature, one-hot encoding creates a new binary indicator variable for every possible value of the original feature. 
+
+\subsection*{MICE Imputation}
+MICE is among the most common strategies for handling missing values in electronic health data\cite{azur2011multiple}. MICE initially fills all missing values with the mean or median of the corresponding non-missing features, and then iteratively cycles through each feature requiring imputations and performs regression by treating all other features as independent variables. Algorithm \ref{mice-algo} provides pseudocode for the MICE algorithm.
+	
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Function{MICE}{Data, numcycles}
+			\State Perform mean/median imputation on all missing values in dataset
+			\For{i in numcycles}
+				\For {feature $f_m$ in set of features with any missing values}
+					\State Regression(Data - $column_{f_m}$, $column_{f_m}$)
+					\State Replace originally missing features in $column_{f_m}$ with regression result
+				\EndFor
+			\EndFor
+		\EndFunction
+		
+	\end{algorithmic}
+	\caption{MICE Imputation}
+	\label{mice-algo}
+\end{algorithm}
+
 
 
 \subsection*{Models}
 We selected the following classifiers to predict survivability. Models were selected based on preliminary test performance as well as models previously reported in literature.
 \begin{itemize}
 	\item \textit{Logistic Regression} Logistic Regression is a classifier that evaluates the weighted sum of the input components, and applies the sigmoid function to the weighted sum. The output from the sigmoid function can be interpreted as the probability of the positive class in the binary classification scenario. The weights are learned during training.
-	\item \textit{Random Forest} A Random Forest is an ensemble of decision trees, where each tree splits nodes based on random features (instead of best feature). The final output class is the class which received the majority vote over the individual trees. Randomly determining which features to split on reduces overfitting because there is no guarantee that a certain feature will be included in each model. 
+	\item \textit{Random Forest} A Random Forest is an ensemble of decision trees, where each tree splits nodes based on random features (instead of best feature)\cite{breiman2001random}. The final output class is the class which received the majority vote over the individual trees. Randomly determining which features to split on reduces overfitting because there is no guarantee that a certain feature will be included in each model. 
 	\item \textit{AdaBoost} AdaBoost\cite{freund1999short} is an ensemble of sequentially trained classifiers. Each instance in the training set is initialized with equal weight. Misclassified instances are given increased weight while training the next classifier. Prediction consists of a weighted prediction on all the classifiers, where each is weighted by its accuracy during training. In this study, the decision stump is used as the base classifier.
-	\item \textit {Neural Network} A neural network is composed of layers of nodes with interconnected weights. Each node receives a weighted sum of the outputs from all the nodes in the previous layer. An activation function is applied to the weighted sum, and the result is the output of the node. The weights in each layer are determined by the backpropagation training method, which updates each weight based on its influence on the loss function. Neural networks are at the forefront of recent deep learning progress.
-	\item \textit {Imbalanced Classification} We have additionally employed the imbalanced classification techniques of weighted classes and undersampling to improve the performance of the above models. Weighted classes penalizes the model more harshly for mislabeling an instance of the minority class. Undersampling only uses a fraction of the majority class instances, to make the proportion between class instances more balanced\cite{he2008learning}. We have also attempted oversampling and SMOTE, but found that those methods yielded inferior results.
+	\item \textit {Neural Network} A neural network is composed of layers of nodes with interconnected weights. Each node receives a weighted sum of the outputs from all the nodes in the previous layer. An activation function is applied to the weighted sum, and the result is the output of the node. The weights in each layer are determined by the backpropagation training method, which updates each weight based on its influence on the loss function. Neural networks are at the forefront of recent deep learning progress\cite{lecun2015deep}.
+	\item \textit {Imbalanced Classification} We have additionally employed the imbalanced classification techniques of weighted classes and undersampling to improve the performance of the above models. Weighted classes penalizes the model more harshly for mislabeling an instance of the minority class. Undersampling only uses a fraction of the majority class instances, to make the proportion between class instances more balanced\cite{he2008learning}.
+	
+	%We have also attempted oversampling and SMOTE\cite{chawla2002smote}, but found that those methods yielded inferior results.
 	
 \end{itemize}
 
 \subsection*{Evaluation Metrics}
 As our class labels are imbalanced, the conventional metric of accuracy is an inadequate indicator of model performance: A model which always predicts that the patient survives would achieve over 80\% accuracy. The most common evaluation metric in the literature is Area Under Curve (AUC) of the ROC curve. The AUC score is intuitively interpreted as the probability that, given a positive and a negative instance, the positive instance is ranked more likely to be positive than the negative instance. The AUC score can be calculated given a set of predicted labels and the corresponding true labels. We employ AUC as the primary evaluation metric so that our results can be more comparable to results reported in the literature.
 
-Additionally, we use the G-mean as an indicator for how well we are doing on an imbalanced classification problem. The G-mean is defined as follows:
+Additionally, we use the G-mean as an indicator for our performance on an imbalanced classification problem. To define the G-mean, we first define the following four metrics:
+\begin{align*}
+\text{TP (true positive): the number of positive instances labeled positive}\\
+\text{TN (true negative): the number of negative instances labeled negative}\\
+\text{FP (false positive): the number of negative instances labeled positive}\\
+\text{FN (false negative): the number of negative instances labeled negative}
+\end{align*} 
+The confusion matrix shown in Table~\ref{confusion-matrix} summarizes the definitions.
+\begin{table}[H]
+	\centering
+	\begin{tabular}{llll}
+		&                                   & \multicolumn{2}{c}{True Label}                     \\ 
+		\cline{3-4}
+		&                                   & Not Survived            & Survived                 \\ 
+		\cline{3-4}
+		\multirow{2}{*}{\rot{Predicted}} & \multicolumn{1}{|l|}{Not Survived} & \multicolumn{1}{l|}{TN} & \multicolumn{1}{l|}{FN}  \\ 
+		\cline{3-4}
+		\multicolumn{1}{l}{}                & \multicolumn{1}{|l|}{Survived}     & \multicolumn{1}{l|}{FP} & \multicolumn{1}{l|}{TP}  \\ 
+		\cline{3-4}
+		&                                   &                         &                         
+	\end{tabular}
+	\caption{The confusion matrix groups instances by the combination of their true and predicted labels.}
+	\label{confusion-matrix}
+\end{table}
+\noindent The G-mean is defined as follows:
 \begin{align*}
 	\text{G-mean} = \sqrt{\text{sensitivity}\cdot\text{specificity}}
 \end{align*}
@@ -199,7 +248,9 @@ where sensitivity and specificity are defined as:
 \end{align*}
  The G-mean is a viable metric for imbalanced classification because it weights the rate of correctly predicting the majority and minority classes equally.
 \section{Results}
-We trained our models in Scikit-learn, an open-source Python machine learning library. We used cross-validation to determine the best hyperparameters for each model, and recorded results on the test sets, each composed of a randomly-selected 10 percent of the data. All code used is in our GitHub repository\cite{cancer_survivability}. Table~\ref{auc-scores} details the AUC scores for each model and dataset. The AUC scores achieved are equal to the best reported in literature by\cite{al2017survivability}. Our AUC scores are calculated on each model's prediction of the probability that the true label is positive. This will generate a higher AUC score because wrong predictions are not penalized as heavily if their probability prediction was closer to 0.5.
+We trained our models with Scikit-learn, an open-source Python machine learning library. We used Scikit-learn version 0.19.1 and Python 3.6.4. All experiments were executed on a Linux machine with an Intel i7-3700 3.4 GHz processor and 16GB RAM running Ubuntu 18.04 LTS.
+
+We used 5-fold cross-validation to determine the best hyperparameters for each model, and recorded results on the test sets, each composed of a randomly-selected 10 percent of the data. All code used is in our GitHub repository\cite{cancer_survivability}. Table~\ref{auc-scores} details the AUC scores for each model and dataset. The AUC scores we achieved with our neural networks are above the best reported in literature of 0.8675 by\cite{al2017survivability}, which was also produced by neural networks. Our AUC scores are calculated on each model's prediction of the probability that the true label is positive. This will provide a higher AUC score because wrong predictions are not penalized as heavily if their probability prediction was closer to 0.5.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{llll}
@@ -210,7 +261,7 @@ We trained our models in Scikit-learn, an open-source Python machine learning li
 		AdaBoost            & .859              & .871           & .859            \\
 		Neural Network       & .873              & .875           & .856           
 	\end{tabular}
-	\caption{AUC scores for trained models on the test set}
+	\caption{AUC scores for trained models on the test set. The highest reported AUC for 2-year colorectal cancer survivability had been 0.8675\cite{al2017survivability}. Our neural network architecture had 3 fully-connected hidden layers of 400 neurons, ReLU activation, 0.1 dropout between each layer besides input layer, with sigmoid output activation.}
 	\label{auc-scores}
 \end{table}
 
@@ -237,7 +288,7 @@ Table~\ref{factor-rankings} ranks the top seven factors for each model and datas
 	
 \end{table}
 
-Table~\ref{gmean-compare} shows the improvements made by using the weighted classes and undersampling imbalanced classification methods. These methods were applied to the datasets prior to model training.
+Table~\ref{gmean-compare} shows the improvements made by using the weighted classes and undersampling imbalanced classification methods. These methods were applied to the datasets prior to model training. Our results are comparable to the G-mean score of 0.792 reported by Al-Bahrani and Agrawal\cite{al2017survivability}.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{llll}
@@ -249,7 +300,7 @@ Table~\ref{gmean-compare} shows the improvements made by using the weighted clas
 		Weighted Random Forest       & .782              & .775           &  \\
 		Undersampled Random Forest & .787 & .796
 	\end{tabular}
-	\caption{G-mean scores for selected models and ethnic populations}
+	\caption{G-mean scores for selected models and ethnic populations. We undersampled until we had an equal number of both labels, and we weighted the minority class five times as the majority class}
 	\label{gmean-compare}
 \end{table}
 
@@ -258,15 +309,13 @@ Our results provide insight into the importance of patient ethnicity in cancer s
 
 Our factor rankings results show fairly consistent variable rankings between the Hispanic and white datasets for the same model, with minor differences. For example, lymph node involvement is the second most important factor for white patient instances in the logistic regression model, but the sixth most important factor for Hispanic patient instances. It is expected that there are not dramatic differences in factor rankings between the two groups. However, even minor differences can be of use in the analysis of a patient’s diagnostic data; for example, by giving an observation of a feature more consideration for a patient with a certain race. Additionally, we observe in table~\ref{factor-rankings} that different models have widely varying factor rankings. This confirms that many factors are not independent, and that there are many viable ways to make survivability predictions with competitive results. We note that neural networks are unable to provide factor rankings due to the non-transparent nature of the model.
 
-
-
-From the imbalanced classification results, we observe that the logistic regression and random forest models both perform better with respect to the G-mean metric with imbalanced classification techniques. Both weighted classes and undersampling improved the G-mean significantly. Applying these techniques to the AdaBoost model achieves similar results. While the G-mean was greatly improved, the AUC score was essentially unchanged for the models. This demonstrates the trade-off between sensitivity and specificity, and the inherent hardness of this classification problem. In the original models sensitivity and specificity values were around 0.9 and 0.4, respectively. After applying either weighted classes or undersampling, sensitivity and specificity values were both close to 0.8. 
+From the imbalanced classification results, we observe that the logistic regression and random forest models both perform better with respect to the G-mean metric with imbalanced classification techniques. Both weighted classes and undersampling improved the G-mean significantly. Applying these techniques to the AdaBoost and neural network model achieves similar results(appendix Table~\ref{more-scores}). The same table shows that G-mean scores greatly improved, while AUC scores slightly increased after applying undersampling to AdaBoost, and slightly decreased after applying undersampling to a neural network. Applying imbalanced classification methods demonstrates the trade-off between sensitivity and specificity, and the inherent hardness of this classification problem. In the original models sensitivity and specificity values were around 0.9 and 0.4, respectively. After applying either weighted classes or undersampling, sensitivity and specificity values were both close to 0.8. 
 
 The trade-off implies that instances with similar feature values have different labels. In some instances this is due to both actual survival times being close in value but on opposite sides of the 24-month cutoff. In other instances, survival times can actually differ widely, suggesting that we do not have all the relevant information. Indeed, this is the case: we only have the colorectal cancer diagnostic information and basic personal information. We hypothesize that more extensive data which includes factors like personal health history and lifestyle information would improve performance beyond the best currently reported in literature. However, there is currently no dataset with such degree of patient information.
 
 
 \section{Conclusion}
-In this study we applied machine learning methods to predict 2-year colorectal cancer survivability. Specifically, we trained logistic regression, random forest, AdaBoost, and neural network models on SEER data we carefully preprocessed. Our models achieved AUC score of 0.87, equaling the best-reported score in the literature [REF]. We used our models to investigate the impact of ethnicity on model performance, as well as diagnostic factor rankings. Our models achieved superior performance on single-ethnicity patient data compared to the mixed data, and we also observed minor differences in factor importance. Finally, we used the imbalanced classification methods of weighted classes and undersampling to improve the G-mean score to approximately 0.8. 
+In this study we applied machine learning methods to predict 2-year colorectal cancer survivability. Specifically, we trained logistic regression, random forest, AdaBoost, and neural network models on SEER data we carefully preprocessed. Our models achieved AUC score of 0.87, improving upon the best-reported score in the literature [REF]. We used our models to investigate the impact of ethnicity on model performance, as well as diagnostic factor rankings. Our models achieved superior performance on single-ethnicity patient data compared to the mixed data, and we also observed minor differences in factor importance. Finally, we used the imbalanced classification methods of weighted classes and undersampling to improve the G-mean score to approximately 0.8. 
 
 We infer from our results that cancer survivability prediction is a difficult classification problem, and that the SEER dataset may not contain enough information to significantly improve the performance of our current models. Future work includes extending our focus on ethnicity beyond the Hispanic and white patient groups, as well as to other types of cancer.
 
@@ -274,5 +323,20 @@ We infer from our results that cancer survivability prediction is a difficult cl
 \section*{References}
 
 \bibliography{mybibfile}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lllll}
+		& \multicolumn{2}{c}{\textbf{Hispanic }} & \multicolumn{2}{c}{\textbf{White}}  \\
+		\textbf{Model}              & \textbf{G-mean} & \textbf{AUC}         & \textbf{G-mean} & \textbf{AUC}      \\ \hline
+		AdaBoost                    & 0.627           & 0.859                & 0.671           & 0.859             \\
+		Undersampled AdaBoost       & 0.787           & 0.865                & 0.798           & 0.871             \\
+		Neural Network              & 0.6             & 0.873                & 0.7             & 0.875             \\
+		Undersampled Neural Network & 0.788           & 0.868                & 0.796           & 0.873             \\
+		&                 &                      &                 &                  
+	\end{tabular}
+	\caption{G-mean scores of AdaBoost and neural networks, as well as G-mean and AUC comparisons for imbalanced classification.}
+	\label{more-scores}
+\end{table}
 
 \end{document}
