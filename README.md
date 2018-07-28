@@ -41,11 +41,18 @@ python SEER_to_csv.py 'f' COLRECT_2000.TXT COLRECT.TXT
 ```
 after we renamed the given SEER `COLRECT.TXT` files. Our output `COLRECT.TXT` file now contains all the parsed colorectal cancer data information in a single file.
 
-### SQL Feature Extraction
+#### SQL Feature Extraction
+We imported our combined `COLRECT.TXT` file into Microsoft Access, which allows fast SQL queries. The file `sql_queries.txt` provides the queries we used to extract the desired variables and instances. We end up with three data files which we keep in our local `Data` folder.
 
 #### Data Preprocessing
+The file `preprocessing_2year_v2.ipynb` includes the data preprocessing and saving the variable maps in .pkl files. Data preprocessing includes imputation and one-hot encoding. For each of the three groups (white, Hispanic, mixed) we create an `X.npy` and `Y2.npy` file, which are saved to the local `Data` folder. For each group we also create a .pkl file containing a mapping from categorical variable to column number. These .pkl files are placed in the `ethnicity_codes` folder.
 
 ### Machine Learning models
-
+The file `models.ipynb` is where we trained Scikit-learn implementations of machine learning models. We scaled the data before training, and tested a wide variety of models. We tried imbalanced classification techniques such as SMOTE, undersampling, and oversampling. There is also a tSNE visualization at the end.
 
 ### Deep Learning models
+THe file `neural_networks.ipynb` trains deep learning models with the Keras library. Included are neural networks and convolutional neural networks.
+
+The file `Embeddings.ipynb` implements [entity embedding](https://arxiv.org/pdf/1604.06737.pdf).
+
+The file `dimensionality_reduction.ipynb` applies dimensionality reduction techniques such as PCA and autoencoders.
