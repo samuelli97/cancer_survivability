@@ -1,4 +1,4 @@
-Layers, maps, kernel size, dense layer size, AUC, Sensitivity, Specificity, G-mean,
+Layers, maps, kernel size, dense layer size, AUC, Sensitivity, Specificity, G-mean
 1,2,10,25,0.8726,0.9388,0.4857,0.6753
 1,2,10,50,0.8676,0.9462,0.4332,0.6403
 1,2,10,100,0.8699,0.9249,0.5187,0.6926
