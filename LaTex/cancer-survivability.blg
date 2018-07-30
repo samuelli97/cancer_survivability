@@ -4,45 +4,45 @@ The top-level auxiliary file: cancer-survivability.aux
 The style file: elsarticle-num.bst
 Database file #1: mybibfile.bib
 Warning--there's a number but no volume in he2008learning
-You've used 16 entries,
+You've used 15 entries,
             2937 wiz_defined-function locations,
-            770 strings with 8152 characters,
-and the built_in function-call counts, 4235 in all, are:
-= -- 396
-> -- 118
+            763 strings with 7948 characters,
+and the built_in function-call counts, 3922 in all, are:
+= -- 365
+> -- 105
 < -- 2
-+ -- 50
-- -- 34
-* -- 252
-:= -- 562
-add.period$ -- 16
-call.type$ -- 16
-change.case$ -- 20
++ -- 45
+- -- 30
+* -- 228
+:= -- 517
+add.period$ -- 15
+call.type$ -- 15
+change.case$ -- 19
 chr.to.int$ -- 0
-cite$ -- 17
-duplicate$ -- 136
-empty$ -- 511
-format.name$ -- 44
-if$ -- 1116
+cite$ -- 16
+duplicate$ -- 128
+empty$ -- 480
+format.name$ -- 39
+if$ -- 1039
 int.to.chr$ -- 0
-int.to.str$ -- 16
-missing$ -- 10
-newline$ -- 56
-num.names$ -- 15
-pop$ -- 117
+int.to.str$ -- 15
+missing$ -- 9
+newline$ -- 53
+num.names$ -- 14
+pop$ -- 112
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 295
+skip$ -- 278
 stack$ -- 0
-substring$ -- 228
-swap$ -- 19
+substring$ -- 203
+swap$ -- 18
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 34
-width$ -- 18
-write$ -- 133
+while$ -- 31
+width$ -- 17
+write$ -- 125
 (There was 1 warning)

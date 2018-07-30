@@ -100,9 +100,11 @@ Upon receiving their diagnosis, a patient will likely want to know their x-year 
 
 There is a sizable literature dedicated to the application of machine learning in cancer prognosis and survivability prediction. Delen et al. used data mining methods to predict breast cancer survivability in 2004\cite{delen2005predicting}. Since then, with the increased adoption of machine learning methods, researchers have applied a wide variety of algorithms to survivability prediction of many types of cancer. Studies include use of deep learning\cite{delen2005predicting,al2017survivability}, ensemble methods\cite{al2013colon}, and imbalanced classification techniques\cite{liu2009decision}. These studies all predict survivability based on detailed personal and diagnostic information for each patient.
 
-One approach to provide patients with more personalized healthcare is to take the patient’s race into account. It is well known that people of different racial groups have varying levels of susceptibility and responses to different diseases. Causes for discrepancies may include anything from genetic differences to environmental influences to cultural factors. Currently, there is significant disparity in colorectal incidence and mortality rates between different racial groups. From 2011 to 2015, the National Cancer Institute reported that the colorectal cancer incidence rate was 38.8 per 100,000 for the white population, while the Hispanic and black populations had incidence rates of 47.6 and 33.5, respectively. In the same years, the white, Hispanic, and black populations had recorded mortality rates of 14.1, 11.5, and 19.4, respectively\cite{race-mortality}.
+One approach to provide patients with more personalized healthcare is to take the patient's race into account. It is well known that people of different racial groups have varying levels of susceptibility and responses to different diseases. Causes for discrepancies may include anything from genetic differences to environmental influences to cultural factors. Currently, there is significant disparity in colorectal incidence and mortality rates between different racial groups. From 2011 to 2015, the National Cancer Institute reported that the colorectal cancer incidence rate was 38.8 per 100,000 for the white population, while the Hispanic and black populations had incidence rates of 47.6 and 33.5, respectively. In the same years, the white, Hispanic, and black populations had recorded mortality rates of 14.1, 11.5, and 19.4, respectively\cite{race-mortality}.
 
 The aim of our research is to develop models which effectively predict colorectal cancer survivability, and to use these models to compare factor importances between populations of different race. In this paper, we apply machine learning methods to predict 2-year survivability for Hispanic and white colorectal cancer patients, and compare factor importances in determining survivability. These two groups were chosen since they were the most frequently appearing ethnic groups in our dataset. While “Hispanic” describes an ethnicity, and therefore the two groups are not automatically disjoint by official race and ethnicity records, most self-described Hispanic people consider their Hispanic background as part of their racial background\cite{hispanic_origin}. In this study, we consider a patient white if their race encoding is white and their Hispanic origin encoding labels them as non-Hispanic.
+
+Additionally, we investigate how we can improve upon the problem as an imbalanced classification problem. An imbalanced classification problem is defined as a problem in which the instance labels, in our case whether or not a patient survives beyond two years, are disproportionate. Table~\ref{dataset-info} shows that the labels are disproportionate in an approximately 4:1 survived versus not-survived ratio. We apply established imbalanced classification techniques to improve imbalanced classification performance.
 
 We created a separate dataset for each race and trained classifiers to predict survivability on the separated data. The trained models provide importance rankings of the patient factors (age at diagnosis, tumor size, primary site, etc.), which allow factor comparison between Hispanic and white patients. We also apply imbalanced classification techniques to improve the performance of our models. 
 
@@ -116,14 +118,14 @@ The diagnostic data used in our research was obtained from the Surveillance, Epi
 
 \begin{table}[H]
 	\centering
-	
+	\caption{Dataset label distribution by ethnicity}
 	\begin{tabular}{cccc}
 		\textbf{Ethnicity} & \textbf{Not Survived} & \textbf{Survived} & \textbf{Total} \\ 
 		\hline
 		White              & 53343 (19.4\%)   & 222204 (80.6\%)        &  275547  \\
 		Hispanic           & 6762 (18\%)       & 30813 (82\%)           &  37575 \\
 	\end{tabular}
-	\caption{Dataset label distribution by ethnicity}
+	
 	\label{dataset-info}
 \end{table}
 
@@ -138,6 +140,7 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 
 \begin{table}[H]
 	\centering
+	\caption{Features used in models}
 	\tiny
 	\begin{tabular}{ll}
 		\textbf{Categorical Variable} & \textbf{Unique values}  \\ 
@@ -148,13 +151,13 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 		Histology         & 139                     \\
 		Behavior          & 2                       \\
 		Grade             & 5                       \\
-		Diagnostic conf.  & 8                       \\
+		Diagnostic confirmation  & 8                       \\
 		Extension         & 65                      \\
 		Lymph Nodes       & 18                      \\
 		Metastasis        & 25                      \\
-		Tumor size eval.  & 7                       \\
-		Node eval.        & 7                       \\
-		Metastasis eval.  & 7                       \\
+		Tumor size evaluation  & 7                       \\
+		Node evaluation        & 7                       \\
+		Metastasis evaluation  & 7                       \\
 		Surgery site      & 34                      \\
 		Reason no surgery & 8                       \\
 		Summary stage     & 5                       \\
@@ -170,7 +173,7 @@ Of the 133 features provided by SEER, we selected the 20 features detailed in Ta
 		Number of tumors  & 1.4           & 0.717          \\
 		Tumor size        & 43.1          & 37.3          
 	\end{tabular}
-	\caption{Features used in models}
+	
 	\label{variable-info}
 \end{table}
 
@@ -180,6 +183,7 @@ In order to reconcile categorical and continuous features, we used a one-hot enc
 MICE is among the most common strategies for handling missing values in electronic health data\cite{azur2011multiple}. MICE initially fills all missing values with the mean or median of the corresponding non-missing features, and then iteratively cycles through each feature requiring imputations and performs regression by treating all other features as independent variables. Algorithm \ref{mice-algo} provides pseudocode for the MICE algorithm.
 	
 \begin{algorithm}[H]
+	\hspace*{\algorithmicindent} \textbf{Data:} input data; \\ \hspace*{\algorithmicindent} \textbf{numcycles:} number of cycles to run MICE (usually 10)
 	\begin{algorithmic}[1]
 		\Function{MICE}{Data, numcycles}
 			\State Perform mean/median imputation on all missing values in dataset
@@ -223,6 +227,8 @@ Additionally, we use the G-mean as an indicator for our performance on an imbala
 \end{align*} 
 The confusion matrix shown in Table~\ref{confusion-matrix} summarizes the definitions.
 \begin{table}[H]
+	
+	\caption{The confusion matrix groups instances by the combination of their true and predicted labels.}
 	\centering
 	\begin{tabular}{llll}
 		&                                   & \multicolumn{2}{c}{True Label}                     \\ 
@@ -235,7 +241,7 @@ The confusion matrix shown in Table~\ref{confusion-matrix} summarizes the defini
 		\cline{3-4}
 		&                                   &                         &                         
 	\end{tabular}
-	\caption{The confusion matrix groups instances by the combination of their true and predicted labels.}
+	
 	\label{confusion-matrix}
 \end{table}
 \noindent The G-mean is defined as follows:
@@ -253,15 +259,16 @@ We trained our models with Scikit-learn, an open-source Python machine learning 
 We used 5-fold cross-validation to determine the best hyperparameters for each model, and recorded results on the test sets, each composed of a randomly-selected 10 percent of the data. All code used is in our GitHub repository\cite{cancer_survivability}. Table~\ref{auc-scores} details the AUC scores for each model and dataset. The AUC scores we achieved with our neural networks are above the best reported in literature of 0.8675 by\cite{al2017survivability}, which was also produced by neural networks. Our AUC scores are calculated on each model's prediction of the probability that the true label is positive. This will provide a higher AUC score because wrong predictions are not penalized as heavily if their probability prediction was closer to 0.5.
 \begin{table}[H]
 	\centering
+	\caption{AUC scores for trained models on the test set. The highest reported AUC for 2-year colorectal cancer survivability had been 0.8675\cite{al2017survivability}. Our neural network architecture had 3 fully-connected hidden layers of 400 neurons, ReLU activation, 0.1 dropout between each layer besides input layer, with sigmoid output activation.}
 	\begin{tabular}{llll}
 		\textbf{Model}      & \textbf{Hispanic} & \textbf{White} & \textbf{Mixed}  \\ 
 		\hline
-		Logistic Regression & .859              & .872           & .87             \\
+		Logistic Regression & .859              & .872           & .870             \\
 		Random Forest       & .855              & .865           & .849            \\
 		AdaBoost            & .859              & .871           & .859            \\
 		Neural Network       & .873              & .875           & .856           
 	\end{tabular}
-	\caption{AUC scores for trained models on the test set. The highest reported AUC for 2-year colorectal cancer survivability had been 0.8675\cite{al2017survivability}. Our neural network architecture had 3 fully-connected hidden layers of 400 neurons, ReLU activation, 0.1 dropout between each layer besides input layer, with sigmoid output activation.}
+	
 	\label{auc-scores}
 \end{table}
 
@@ -271,7 +278,7 @@ Table~\ref{factor-rankings} ranks the top seven factors for each model and datas
 \begin{table}[H]
 	\centering
 	\footnotesize
-	\label{factor-rankings}
+	\caption{Factor rankings for each model and ethnic population}
 	\begin{tabular}{ll|ll|ll}
 		\multicolumn{2}{c}{\textbf{Logistic Regression}}         & \multicolumn{2}{c}{\textbf{Random Forest}}              & \multicolumn{2}{c}{\textbf{AdaBoost}}                   \\
 		\multicolumn{1}{l}{\textbf{Hispanic}} & \textbf{White}   & \multicolumn{1}{l}{\textbf{Hispanic}} & \textbf{White}  & \multicolumn{1}{l}{\textbf{Hispanic}} & \textbf{White}  \\ \hline
@@ -283,24 +290,27 @@ Table~\ref{factor-rankings} ranks the top seven factors for each model and datas
 		Lymph node inv.                       & Diagnostic conf. & Surgery site                          & Surgery site    & Metastasis                            & Tumor size      \\
 		No surg. reason                       & Primary site     & Tumor size                            & Tumor size      & Surgery site                          & Surgery site   
 	\end{tabular}
-	\caption{Factor rankings for each model and ethnic population}
+	
 	\label{factor-rankings}
 	
 \end{table}
 
 Table~\ref{gmean-compare} shows the improvements made by using the weighted classes and undersampling imbalanced classification methods. These methods were applied to the datasets prior to model training. Our results are comparable to the G-mean score of 0.792 reported by Al-Bahrani and Agrawal\cite{al2017survivability}.
 \begin{table}[H]
+	\caption{G-mean scores for selected models and ethnic populations. We undersampled until we had an equal number of both labels, and we weighted the minority class five times as the majority class}
 	\centering
 	\begin{tabular}{llll}
 		\textbf{Model}               & \textbf{Hispanic} & \textbf{White} &   \\ \hline
 		Logistic Regression          & .628              & .683           &   \\
-		Weighted Logistic Regression & .783              & .8             &   \\
-		Undersampled Logistic Regression & .79 & .8 & \\ 
+		Weighted Logistic Regression & .783              & .800             &   \\
+		Undersampled Logistic Regression & .790 & .800 & \\ 
 		Random Forest                & .623              & .631           &   \\
 		Weighted Random Forest       & .782              & .775           &  \\
 		Undersampled Random Forest & .787 & .796
+		
 	\end{tabular}
-	\caption{G-mean scores for selected models and ethnic populations. We undersampled until we had an equal number of both labels, and we weighted the minority class five times as the majority class}
+	
+	
 	\label{gmean-compare}
 \end{table}
 

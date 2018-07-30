@@ -38,7 +38,7 @@ Y.-Q. Liu, C.~Wang, L.~Zhang, Decision tree based predictive models for breast
 
 \bibitem{race-mortality}
 {SEER Cancer Statistics Review 1975-2015}, Age-adjusted seer incidence rates
-  and trends for the top 15 cancer sitesa by race/ethnicity,
+  and trends for the top 15 cancer sites by race/ethnicity,
   \url{https://seer.cancer.gov/csr/1975_2015/results_merged/topic_race_ethnicity.pdf},
   accessed: 2018-07-11.
 
@@ -72,11 +72,6 @@ Y.~LeCun, Y.~Bengio, G.~Hinton, Deep learning, nature 521~(7553) (2015) 436.
 \bibitem{he2008learning}
 H.~He, E.~A. Garcia, Learning from imbalanced data, IEEE Transactions on
   Knowledge \& Data Engineering~(9) (2008) 1263--1284.
-
-\bibitem{chawla2002smote}
-N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, W.~P. Kegelmeyer, Smote: synthetic
-  minority over-sampling technique, Journal of artificial intelligence research
-  16 (2002) 321--357.
 
 \bibitem{cancer_survivability}
 S.~Li, Personalized colorectal cancer survivability prediction,
