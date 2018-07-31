@@ -16,6 +16,8 @@ Data access to the SEER dataset is granted after a form submission to NCI. For d
 
 **LaTex**: Contains the paper written for this project and other LaTex files
 
+**deep_learning_results**: Contains results for convolutional neural networks and autoencoders.
+
 ### Files
 **preprocessing_2year_v2.ipynb**: Data preprocessing on the csv files after SEER-related preprocessing. Includes imputation, one-hot encoding, etc.
 
